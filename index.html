@@ -1,12 +1,815 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bolão Copa 2026</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bolão Copa 2026 - Família Fatiche</title>
+  <style>
+    :root {
+      --green: #006b3f;
+      --green-dark: #004f2d;
+      --yellow: #ffcc29;
+      --blue: #002776;
+      --cream: #fffaf0;
+      --line: #e6d9bf;
+      --text: #071b14;
+      --muted: #667085;
+      --shadow: 0 10px 28px rgba(0,0,0,.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255,204,41,.25), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(0,39,118,.18), transparent 30%),
+        var(--cream);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #fffaf0;
+      padding-bottom: 42px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px 16px 18px;
+      text-align: center;
+      color: white;
+      background:
+        radial-gradient(circle at 5% 0%, rgba(255,204,41,.22), transparent 26%),
+        radial-gradient(circle at 98% 16%, rgba(255,255,255,.13), transparent 18%),
+        linear-gradient(135deg, #007a3d 0%, #006b3f 45%, #003f88 100%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      left: -42px;
+      top: -38px;
+      width: 120px;
+      height: 120px;
+      border: 3px solid rgba(255,204,41,.28);
+      border-radius: 50%;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -34px;
+      bottom: -44px;
+      width: 120px;
+      height: 120px;
+      border: 3px solid rgba(255,204,41,.22);
+      border-radius: 50%;
+    }
+
+    .cup {
+      font-size: 30px;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: var(--yellow);
+      font-size: 25px;
+      letter-spacing: 1.5px;
+      text-shadow: 0 3px 0 rgba(0,0,0,.22);
+      font-weight: 950;
+    }
+
+    .family {
+      position: relative;
+      z-index: 1;
+      margin-top: 5px;
+      font-size: 13px;
+      opacity: .92;
+    }
+
+    .score-strip {
+      background: var(--green);
+      padding: 15px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .mini-rank {
+      border: 1px solid rgba(255,204,41,.75);
+      border-radius: 9px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      text-align: center;
+      padding: 11px 8px;
+    }
+
+    .mini-rank:nth-child(2),
+    .mini-rank:nth-child(3) {
+      border-color: rgba(255,255,255,.25);
+    }
+
+    .mini-rank .person {
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .mini-rank:nth-child(2) .person,
+    .mini-rank:nth-child(3) .person {
+      color: white;
+    }
+
+    .mini-rank .score {
+      color: var(--yellow);
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 950;
+      margin-top: 2px;
+    }
+
+    .mini-rank .label {
+      font-size: 11px;
+      color: rgba(255,255,255,.8);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: white;
+      border-bottom: 2px solid var(--green);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .tab {
+      border: 1px solid #c7c7c7;
+      border-left: 0;
+      background: white;
+      padding: 12px 6px;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .tab.active {
+      color: var(--green);
+      background: #fffdf7;
+      box-shadow: inset 0 -4px 0 var(--yellow);
+    }
+
+    .content { padding: 15px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-title {
+      color: var(--green);
+      font-weight: 950;
+      font-size: 14px;
+      letter-spacing: .7px;
+      margin: 4px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .ranking-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 18px rgba(0,0,0,.05);
+    }
+
+    .ranking-table th {
+      background: var(--green);
+      color: white;
+      font-size: 12px;
+      text-align: left;
+      padding: 10px;
+    }
+
+    .ranking-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .ranking-table tr:last-child td { border-bottom: 0; }
+
+    .pts {
+      color: var(--green);
+      font-weight: 950;
+      font-size: 17px;
+    }
+
+    .medal { font-size: 18px; }
+
+    .match-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .match-head {
+      display: grid;
+      grid-template-columns: 95px 1fr 150px;
+      align-items: center;
+      gap: 8px;
+      background: var(--green);
+      color: white;
+      padding: 8px 12px;
+    }
+
+    .group-pill {
+      background: var(--green-dark);
+      color: white;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 7px;
+      padding: 6px 8px;
+      font-weight: 900;
+      font-size: 12px;
+      width: fit-content;
+    }
+
+    .date-time {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 850;
+      color: white;
+    }
+
+    .status {
+      text-align: right;
+      font-size: 13px;
+      font-weight: 850;
+      padding: 6px 8px;
+      border-radius: 8px;
+      width: fit-content;
+      justify-self: end;
+    }
+
+    .status.open {
+      background: rgba(255,204,41,.18);
+      color: #fff6c8;
+    }
+
+    .status.live {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+    }
+
+    .status.done {
+      background: rgba(0,0,0,.18);
+      color: #e9fff3;
+    }
+
+    .match-body {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 12px 12px;
+    }
+
+    .team {
+      text-align: center;
+      font-weight: 850;
+      min-width: 0;
+    }
+
+    .flag {
+      width: 58px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 7px;
+      border-radius: 7px;
+      font-size: 29px;
+      background: #f4f4f4;
+      box-shadow: 0 4px 10px rgba(0,0,0,.12);
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .team-name {
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .scorebox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #193a31;
+      font-weight: 900;
+    }
+
+    .score-num {
+      width: 43px;
+      height: 43px;
+      border: 2px solid var(--green);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+      color: var(--green);
+      background: #fffdf7;
+      font-weight: 950;
+    }
+
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      background: #fbf7ee;
+    }
+
+    .prediction-cell {
+      text-align: center;
+      padding: 11px 6px;
+      border-right: 1px solid var(--line);
+    }
+
+    .prediction-cell:last-child { border-right: 0; }
+
+    .prediction-name {
+      color: #747474;
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .prediction-score {
+      font-weight: 950;
+      font-size: 17px;
+    }
+
+    .prediction-points {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+      margin-top: 2px;
+    }
+
+    .locked {
+      padding: 9px 13px;
+      color: #ef4444;
+      font-style: italic;
+      font-size: 12px;
+      background: #fffaf0;
+      border-top: 1px solid var(--line);
+    }
+
+    .rules-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.04);
+    }
+
+    .rules-title {
+      color: var(--green);
+      font-weight: 950;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 9px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .rule-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee6d8;
+    }
+
+    .rule-row:last-child { border-bottom: 0; }
+
+    .rule-icon { font-size: 20px; }
+    .rule-main { font-weight: 900; }
+
+    .rule-sub {
+      color: #555;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .rule-points {
+      color: var(--green);
+      font-weight: 950;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+
+    input {
+      width: 48px;
+      height: 42px;
+      border: 2px solid var(--green);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--green);
+      background: white;
+    }
+
+    .save {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      margin-top: 12px;
+      padding: 13px;
+      background: var(--yellow);
+      color: #102615;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #d9a900;
+    }
+
+    .note {
+      color: #555;
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 4px 0 14px;
+    }
+
+    @media (max-width: 560px) {
+      .match-head { grid-template-columns: 90px 1fr; }
+      .status {
+        grid-column: 1 / -1;
+        text-align: left;
+        justify-self: start;
+      }
+      .team-name { font-size: 13px; }
+      .score-num { width: 38px; height: 38px; }
+      .tab { font-size: 12px; }
+      .flag {
+        width: 52px;
+        height: 35px;
+        font-size: 26px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>🏆 Bolão Copa 2026</h1>
-  <p>Família Fatiche</p>
+  <main class="app">
+    <header class="hero">
+      <div class="cup">🏆</div>
+      <h1>BOLÃO COPA 2026</h1>
+      <div class="family">Família Fatiche</div>
+    </header>
+
+    <section class="score-strip">
+      <div class="mini-rank">
+        <div class="person">Vinicius</div>
+        <div class="score">1</div>
+        <div class="label">ponto</div>
+      </div>
+      <div class="mini-rank">
+        <div class="person">Evelyn</div>
+        <div class="score">3</div>
+        <div class="label">pontos</div>
+      </div>
+      <div class="mini-rank">
+        <div class="person">Helena</div>
+        <div class="score">1</div>
+        <div class="label">ponto</div>
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-target="jogos">⚽ JOGOS</button>
+      <button class="tab" data-target="palpites">🎯 PALPITES</button>
+      <button class="tab" data-target="ranking">🏆 RANKING</button>
+      <button class="tab" data-target="regras">📋 REGRAS</button>
+    </nav>
+
+    <div class="content">
+      <section id="jogos" class="section active">
+        <div class="section-title">🌎 Fase de grupos</div>
+
+        <article class="match-card">
+          <div class="match-head">
+            <div class="group-pill">Grupo C</div>
+            <div class="date-time">📅 19/06/2026 &nbsp; 🕤 21:30</div>
+            <div class="status done">🏁 Finalizado</div>
+          </div>
+
+          <div class="match-body">
+            <div class="team">
+              <div class="flag">🇧🇷</div>
+              <div class="team-name">Brasil</div>
+            </div>
+
+            <div class="scorebox">
+              <div class="score-num">2</div>
+              <span>x</span>
+              <div class="score-num">0</div>
+            </div>
+
+            <div class="team">
+              <div class="flag">🇭🇹</div>
+              <div class="team-name">Haiti</div>
+            </div>
+          </div>
+
+          <div class="prediction-grid">
+            <div class="prediction-cell">
+              <div class="prediction-name">Vinicius</div>
+              <div class="prediction-score">3 x 0</div>
+              <div class="prediction-points">+1 pt</div>
+            </div>
+            <div class="prediction-cell">
+              <div class="prediction-name">Evelyn</div>
+              <div class="prediction-score">2 x 0</div>
+              <div class="prediction-points">+3 pts</div>
+            </div>
+            <div class="prediction-cell">
+              <div class="prediction-name">Helena</div>
+              <div class="prediction-score">1 x 0</div>
+              <div class="prediction-points">+1 pt</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="match-card">
+          <div class="match-head">
+            <div class="group-pill">Grupo J</div>
+            <div class="date-time">📅 22/06/2026 &nbsp; 🕑 14:00</div>
+            <div class="status open">🟢 Aberto para palpites</div>
+          </div>
+
+          <div class="match-body">
+            <div class="team">
+              <div class="flag">🇦🇷</div>
+              <div class="team-name">Argentina</div>
+            </div>
+
+            <div class="scorebox">
+              <div class="score-num">?</div>
+              <span>x</span>
+              <div class="score-num">?</div>
+            </div>
+
+            <div class="team">
+              <div class="flag">🇦🇹</div>
+              <div class="team-name">Áustria</div>
+            </div>
+          </div>
+
+          <div class="prediction-grid">
+            <div class="prediction-cell">
+              <div class="prediction-name">Vinicius</div>
+              <div class="prediction-score">—</div>
+            </div>
+            <div class="prediction-cell">
+              <div class="prediction-name">Evelyn</div>
+              <div class="prediction-score">—</div>
+            </div>
+            <div class="prediction-cell">
+              <div class="prediction-name">Helena</div>
+              <div class="prediction-score">—</div>
+            </div>
+          </div>
+          <div class="locked">🔒 Palpites bloqueiam automaticamente quando o jogo começa</div>
+        </article>
+
+        <article class="match-card">
+          <div class="match-head">
+            <div class="group-pill">Grupo K</div>
+            <div class="date-time">📅 23/06/2026 &nbsp; 🕐 13:00</div>
+            <div class="status live">🟡 Jogo em andamento</div>
+          </div>
+
+          <div class="match-body">
+            <div class="team">
+              <div class="flag">🇵🇹</div>
+              <div class="team-name">Portugal</div>
+            </div>
+
+            <div class="scorebox">
+              <div class="score-num">1</div>
+              <span>x</span>
+              <div class="score-num">1</div>
+            </div>
+
+            <div class="team">
+              <div class="flag">🇨🇴</div>
+              <div class="team-name">Colômbia</div>
+            </div>
+          </div>
+
+          <div class="prediction-grid">
+            <div class="prediction-cell">
+              <div class="prediction-name">Vinicius</div>
+              <div class="prediction-score">2 x 1</div>
+            </div>
+            <div class="prediction-cell">
+              <div class="prediction-name">Evelyn</div>
+              <div class="prediction-score">1 x 1</div>
+            </div>
+            <div class="prediction-cell">
+              <div class="prediction-name">Helena</div>
+              <div class="prediction-score">0 x 2</div>
+            </div>
+          </div>
+          <div class="locked">🔒 Palpites já estão bloqueados para este jogo</div>
+        </article>
+      </section>
+
+      <section id="palpites" class="section">
+        <div class="section-title">🎯 Fazer palpite</div>
+        <p class="note">Nesta primeira versão visual, a tela mostra como será o formulário. Depois vamos conectar ao Supabase e cada link abrirá direto o participante correto.</p>
+
+        <article class="match-card">
+          <div class="match-head">
+            <div class="group-pill">Grupo J</div>
+            <div class="date-time">📅 22/06/2026 &nbsp; 🕑 14:00</div>
+            <div class="status open">🟢 Aberto para palpites</div>
+          </div>
+
+          <div class="match-body">
+            <div class="team">
+              <div class="flag">🇦🇷</div>
+              <div class="team-name">Argentina</div>
+            </div>
+
+            <div class="scorebox">
+              <input type="number" min="0" value="2">
+              <span>x</span>
+              <input type="number" min="0" value="1">
+            </div>
+
+            <div class="team">
+              <div class="flag">🇦🇹</div>
+              <div class="team-name">Áustria</div>
+            </div>
+          </div>
+
+          <div class="locked">🔒 Depois que o jogo começar, não será possível alterar o palpite.</div>
+          <div style="padding: 0 12px 14px;">
+            <button class="save">Salvar palpite</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="ranking" class="section">
+        <div class="section-title">🏅 Classificação geral</div>
+
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Pts</th>
+              <th>⭐ Exatos</th>
+              <th>✓ Vencedor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="medal">🥇</td>
+              <td><strong>Evelyn</strong></td>
+              <td class="pts">3</td>
+              <td>1</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td class="medal">🥈</td>
+              <td><strong>Helena</strong></td>
+              <td class="pts">1</td>
+              <td>0</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td class="medal">🥉</td>
+              <td><strong>Vinicius</strong></td>
+              <td class="pts">1</td>
+              <td>0</td>
+              <td>1</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="regras" class="section">
+        <div class="rules-card">
+          <div class="rules-title">⚽ Fase de grupos</div>
+
+          <div class="rule-row">
+            <div class="rule-icon">⭐</div>
+            <div>
+              <div class="rule-main">Placar exato</div>
+              <div class="rule-sub">Acertou o placar certinho</div>
+            </div>
+            <div class="rule-points">3 pts</div>
+          </div>
+
+          <div class="rule-row">
+            <div class="rule-icon">✓</div>
+            <div>
+              <div class="rule-main">Vencedor ou empate</div>
+              <div class="rule-sub">Acertou quem ganhou ou que empatou</div>
+            </div>
+            <div class="rule-points">1 pt</div>
+          </div>
+
+          <div class="rule-row">
+            <div class="rule-icon">✕</div>
+            <div>
+              <div class="rule-main">Errou</div>
+            </div>
+            <div class="rule-points" style="color:#b7b7b7;">0 pts</div>
+          </div>
+        </div>
+
+        <div class="rules-card">
+          <div class="rules-title">🏆 Mata-mata — pontuação dobrada</div>
+
+          <div class="rule-row">
+            <div class="rule-icon">⭐</div>
+            <div>
+              <div class="rule-main">Placar exato</div>
+              <div class="rule-sub">Acertou o placar certinho</div>
+            </div>
+            <div class="rule-points">6 pts</div>
+          </div>
+
+          <div class="rule-row">
+            <div class="rule-icon">✓</div>
+            <div>
+              <div class="rule-main">Vencedor ou empate no tempo normal</div>
+            </div>
+            <div class="rule-points">2 pts</div>
+          </div>
+
+          <div class="rule-row">
+            <div class="rule-icon">✕</div>
+            <div>
+              <div class="rule-main">Errou</div>
+            </div>
+            <div class="rule-points" style="color:#b7b7b7;">0 pts</div>
+          </div>
+        </div>
+
+        <div class="rules-card">
+          <div class="rules-title">📌 Outras regras</div>
+
+          <div class="rule-row">
+            <div class="rule-icon">🔒</div>
+            <div class="rule-sub">Palpites bloqueiam automaticamente quando o jogo começa</div>
+          </div>
+
+          <div class="rule-row">
+            <div class="rule-icon">👀</div>
+            <div class="rule-sub">Todos veem os palpites de todos em tempo real</div>
+          </div>
+
+          <div class="rule-row">
+            <div class="rule-icon">⚙️</div>
+            <div class="rule-sub">Qualquer participante pode inserir resultados manualmente caso a API falhe</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const tabButtons = document.querySelectorAll('.tab');
+    const sections = document.querySelectorAll('.section');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.target;
+        tabButtons.forEach(b => b.classList.toggle('active', b === button));
+        sections.forEach(s => s.classList.toggle('active', s.id === target));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
 </body>
 </html>
