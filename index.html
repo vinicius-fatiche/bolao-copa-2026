@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bolão Copa 2026 - Família Fatiche</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=NEdUlxU5e7sUClasqdhIu5HzBQnAHZ-E-tBjM_1OJbdMSVdTMXL0C68CZsk4VXCoE6UgD7MWrtOlCsyH6pyidXH1p0h6wHvnXg73KCNMv92mOsixeeJpRSBZq63P-H2MIOXUyw0rFvN8239ej8D9y6QjWLbg5hIqwmb7xRJkTBnkVpCS8Dsgctq3fGhfa0iIeXZbvgqt2LLRavzIDM9UdOFiGzJtKar-2GhWBPnnIOHFI1G3emGTuezsQCyQR5FQSIvJPHBG2pmmUFsKsHLNfAkvIpcovwmyDyviQGOGf2fpf0Fy_w48KTewpFsfHphsnPxz38boxe2yYJSvMnksYA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{--green:#006b3f;--green2:#004f2d;--yellow:#ffcc29;--blue:#002776;--cream:#fffaf0;--line:#e6d9bf;--text:#071b14;--muted:#667085;--shadow:0 10px 28px rgba(0,0,0,.12)}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,rgba(255,204,41,.25),transparent 28%),radial-gradient(circle at bottom right,rgba(0,39,118,.18),transparent 30%),var(--cream);color:var(--text)}
@@ -58,7 +58,21 @@
     });
 
     function formatarData(iso){return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));}
-    function getSelecao(codigo){return selecoes.find(s=>s.codigo===codigo)||{codigo,nome:codigo,bandeira:codigo};}
+    function codigoParaBandeira(codigo){
+      if(!codigo) return "";
+      const mapa = {
+        BR:"🇧🇷", AR:"🇦🇷", AT:"🇦🇹", HT:"🇭🇹", EC:"🇪🇨", MX:"🇲🇽", PT:"🇵🇹", MA:"🇲🇦",
+        CO:"🇨🇴", US:"🇺🇸", CA:"🇨🇦", DE:"🇩🇪", FR:"🇫🇷", ES:"🇪🇸", GB:"🇬🇧", EN:"🏴",
+        JP:"🇯🇵", KR:"🇰🇷", UY:"🇺🇾", PY:"🇵🇾", AU:"🇦🇺", CH:"🇨🇭", BE:"🇧🇪", NL:"🇳🇱",
+        SE:"🇸🇪", NO:"🇳🇴", DK:"🇩🇰", HR:"🇭🇷", GH:"🇬🇭", SN:"🇸🇳", TN:"🇹🇳", EG:"🇪🇬",
+        IR:"🇮🇷", SA:"🇸🇦", QA:"🇶🇦", NZ:"🇳🇿", TR:"🇹🇷"
+      };
+      return mapa[codigo.toUpperCase()] || codigo;
+    }
+    function getSelecao(codigo){
+      const s = selecoes.find(s=>s.codigo===codigo) || {codigo,nome:codigo,bandeira:codigo};
+      return {...s, bandeira: codigoParaBandeira(s.bandeira || s.codigo)};
+    }
     function getPalpite(jogoId, participanteId){return palpites.find(p=>p.jogo_id===jogoId && p.participante_id===participanteId);}
     function jogoAberto(jogo){return new Date(jogo.data_hora) > new Date();}
     function statusInfo(jogo){
