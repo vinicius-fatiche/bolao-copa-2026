@@ -237,26 +237,54 @@
       return lista;
     }
 
-    function renderJogos(){
-      const c=document.getElementById("jogos-lista");
-      const jogosFiltrados = filtrarJogos();
+    function nomeFase(j){
+  if(j.fase === "grupos") return j.grupo ? `Grupo ${j.grupo}` : "Fase de grupos";
+  if(j.fase === "segunda_fase") return `Segunda fase ${j.numero_jogo || ""}`;
+  if(j.fase === "oitavas") return `Oitavas ${j.numero_jogo || ""}`;
+  if(j.fase === "quartas") return `Quartas ${j.numero_jogo || ""}`;
+  if(j.fase === "semifinal") return `Semifinal ${j.numero_jogo || ""}`;
+  if(j.fase === "terceiro_lugar") return "3º lugar";
+  if(j.fase === "final") return "Final";
+  return j.fase || "Jogo";
+}
 
-      if(!jogosFiltrados.length){
-        c.classList.add("loading");
-        c.innerHTML = '<div>Nenhum jogo encontrado neste filtro.</div>';
-        return;
-      }
+function timeDoJogo(j, lado){
+  const codigo = lado === "a" ? j.selecao_a : j.selecao_b;
+  const rotulo = lado === "a" ? j.rotulo_a : j.rotulo_b;
 
-      c.classList.remove("loading");
-      c.innerHTML=jogosFiltrados.map(j=>{
-        const a=getSelecao(j.selecao_a), b=getSelecao(j.selecao_b), st=statusInfo(j);
-        const preds=participantes.map(part=>{
-          const pal=getPalpite(j.id,part.id), pts=pontosJogo(j,pal);
-          return `<div class="prediction-cell"><div class="prediction-name">${part.nome}</div><div class="prediction-score">${pal?`${pal.gols_a} x ${pal.gols_b}`:"—"}</div>${pts!==null?`<div class="prediction-points">+${pts} pt${pts===1?"":"s"}</div>`:""}</div>`;
-        }).join("");
-        return `<article class="match-card"><div class="match-head"><div class="group-pill">${j.grupo?`Grupo ${j.grupo}`:j.fase}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status ${st.classe}">${st.texto}</div></div><div class="match-body"><div class="team"><div class="flag">${a.bandeira||a.codigo}</div><div class="team-name">${a.nome}</div></div><div class="scorebox"><div class="score-num">${j.gols_a??"?"}</div><span>x</span><div class="score-num">${j.gols_b??"?"}</div></div><div class="team"><div class="flag">${b.bandeira||b.codigo}</div><div class="team-name">${b.nome}</div></div></div><div class="prediction-grid">${preds}</div>${jogoAberto(j)?'<div class="locked">🔒 Palpites bloqueiam automaticamente quando o jogo começa</div>':""}</article>`;
-      }).join("");
-    }
+  if(codigo){
+    return getSelecao(codigo);
+  }
+
+  return {
+    codigo: rotulo || "?",
+    nome: rotulo || "A definir",
+    bandeira: "🏆"
+  };
+}
+
+function renderJogos(){
+  const c=document.getElementById("jogos-lista");
+  const jogosFiltrados = filtrarJogos();
+
+  if(!jogosFiltrados.length){
+    c.classList.add("loading");
+    c.innerHTML = '<div>Nenhum jogo encontrado neste filtro.</div>';
+    return;
+  }
+
+  c.classList.remove("loading");
+  c.innerHTML=jogosFiltrados.map(j=>{
+    const a=timeDoJogo(j,"a"), b=timeDoJogo(j,"b"), st=statusInfo(j);
+
+    const preds=participantes.map(part=>{
+      const pal=getPalpite(j.id,part.id), pts=pontosJogo(j,pal);
+      return `<div class="prediction-cell"><div class="prediction-name">${part.nome}</div><div class="prediction-score">${pal?`${pal.gols_a} x ${pal.gols_b}`:"—"}</div>${pts!==null?`<div class="prediction-points">+${pts} pt${pts===1?"":"s"}</div>`:""}</div>`;
+    }).join("");
+
+    return `<article class="match-card"><div class="match-head"><div class="group-pill">${nomeFase(j)}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status ${st.classe}">${st.texto}</div></div><div class="match-body"><div class="team"><div class="flag">${a.bandeira||a.codigo}</div><div class="team-name">${a.nome}</div></div><div class="scorebox"><div class="score-num">${j.gols_a??"?"}</div><span>x</span><div class="score-num">${j.gols_b??"?"}</div></div><div class="team"><div class="flag">${b.bandeira||b.codigo}</div><div class="team-name">${b.nome}</div></div></div><div class="prediction-grid">${preds}</div>${jogoAberto(j)?'<div class="locked">🔒 Palpites bloqueiam automaticamente quando o jogo começa</div>':""}</article>`;
+  }).join("");
+}
 
     function renderPalpites(){
       participanteAtual=participantes.find(p=>p.slug===slugPelaUrl);
