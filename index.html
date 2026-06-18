@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bolão Copa 2026 - Família Fatiche</title>
-  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=NEdUlxU5e7sUClasqdhIu5HzBQnAHZ-E-tBjM_1OJbdMSVdTMXL0C68CZsk4VXCoE6UgD7MWrtOlCsyH6pyidXH1p0h6wHvnXg73KCNMv92mOsixeeJpRSBZq63P-H2MIOXUyw0rFvN8239ej8D9y6QjWLbg5hIqwmb7xRJkTBnkVpCS8Dsgctq3fGhfa0iIeXZbvgqt2LLRavzIDM9UdOFiGzJtKar-2GhWBPnnIOHFI1G3emGTuezsQCyQR5FQSIvJPHBG2pmmUFsKsHLNfAkvIpcovwmyDyviQGOGf2fpf0Fy_w48KTewpFsfHphsnPxz38boxe2yYJSvMnksYA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{--green:#006b3f;--green2:#004f2d;--yellow:#ffcc29;--blue:#002776;--cream:#fffaf0;--line:#e6d9bf;--text:#071b14;--muted:#667085;--shadow:0 10px 28px rgba(0,0,0,.12)}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,rgba(255,204,41,.25),transparent 28%),radial-gradient(circle at bottom right,rgba(0,39,118,.18),transparent 30%),var(--cream);color:var(--text)}
@@ -12,7 +12,7 @@
     .hero:before{content:"";position:absolute;left:-42px;top:-38px;width:120px;height:120px;border:3px solid rgba(255,204,41,.28);border-radius:50%}.hero:after{content:"";position:absolute;right:-34px;bottom:-44px;width:120px;height:120px;border:3px solid rgba(255,204,41,.22);border-radius:50%}
     .cup{font-size:30px;margin-bottom:6px;position:relative;z-index:1}h1{position:relative;z-index:1;margin:0;color:var(--yellow);font-size:25px;letter-spacing:1.5px;text-shadow:0 3px 0 rgba(0,0,0,.22);font-weight:950}.family{position:relative;z-index:1;margin-top:5px;font-size:13px;opacity:.92}
     .score-strip{background:var(--green);padding:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mini-rank{border:1px solid rgba(255,204,41,.75);border-radius:9px;background:rgba(255,255,255,.12);color:white;text-align:center;padding:11px 8px}.mini-rank:nth-child(2),.mini-rank:nth-child(3){border-color:rgba(255,255,255,.25)}.person{font-size:11px;letter-spacing:1px;color:var(--yellow);text-transform:uppercase;font-weight:800}.mini-rank:nth-child(2) .person,.mini-rank:nth-child(3) .person{color:white}.score{color:var(--yellow);font-size:32px;line-height:1;font-weight:950;margin-top:2px}.label{font-size:11px;color:rgba(255,255,255,.8)}
-    .tabs{display:grid;grid-template-columns:repeat(4,1fr);background:white;border-bottom:2px solid var(--green);position:sticky;top:0;z-index:5}.tab{border:1px solid #c7c7c7;border-left:0;background:white;padding:12px 6px;font-weight:900;font-size:13px;cursor:pointer;color:#111}.tab.active{color:var(--green);background:#fffdf7;box-shadow:inset 0 -4px 0 var(--yellow)}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr);background:white;border-bottom:2px solid var(--green);position:sticky;top:0;z-index:5}.tab{border:1px solid #c7c7c7;border-left:0;background:white;padding:12px 6px;font-weight:900;font-size:13px;cursor:pointer;color:#111}.tab.active{color:var(--green);background:#fffdf7;box-shadow:inset 0 -4px 0 var(--yellow)}
     .content{padding:15px}.section{display:none}.section.active{display:block}.section-title{color:var(--green);font-weight:950;font-size:14px;letter-spacing:.7px;margin:4px 0 12px;text-transform:uppercase}.loading{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;color:#555;text-align:center}
     .ranking-table{width:100%;border-collapse:separate;border-spacing:0;background:white;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 5px 18px rgba(0,0,0,.05)}.ranking-table th{background:var(--green);color:white;font-size:12px;text-align:left;padding:10px}.ranking-table td{padding:12px 10px;border-bottom:1px solid var(--line);font-size:13px}.ranking-table tr:last-child td{border-bottom:0}.pts{color:var(--green);font-weight:950;font-size:17px}.medal{font-size:18px}
     .match-card{background:white;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-bottom:12px;box-shadow:var(--shadow)}.match-head{display:grid;grid-template-columns:95px 1fr 150px;align-items:center;gap:8px;background:var(--green);color:white;padding:8px 12px}.group-pill{background:var(--green2);color:white;border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:6px 8px;font-weight:900;font-size:12px;width:fit-content}.date-time{text-align:center;font-size:13px;font-weight:850;color:white}.status{text-align:right;font-size:13px;font-weight:850;padding:6px 8px;border-radius:8px;width:fit-content;justify-self:end}.open{background:rgba(255,204,41,.18);color:#fff6c8}.live{background:rgba(255,255,255,.18);color:#fff}.done{background:rgba(0,0,0,.18);color:#e9fff3}
@@ -20,6 +20,16 @@
     .prediction-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);background:#fbf7ee}.prediction-cell{text-align:center;padding:11px 6px;border-right:1px solid var(--line)}.prediction-cell:last-child{border-right:0}.prediction-name{color:#747474;font-size:11px;text-transform:uppercase;margin-bottom:4px}.prediction-score{font-weight:950;font-size:17px}.prediction-points{color:var(--green);font-size:12px;font-weight:900;margin-top:2px}.locked{padding:9px 13px;color:#ef4444;font-style:italic;font-size:12px;background:#fffaf0;border-top:1px solid var(--line)}
     .rules-card{background:white;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.04)}.rules-title{color:var(--green);font-weight:950;letter-spacing:.5px;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:10px;text-transform:uppercase}.rule-row{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eee6d8}.rule-row:last-child{border-bottom:0}.rule-icon{font-size:20px}.rule-main{font-weight:900}.rule-sub{color:#555;font-size:13px;margin-top:2px}.rule-points{color:var(--green);font-weight:950;font-size:18px;white-space:nowrap}
     input{width:48px;height:42px;border:2px solid var(--green);border-radius:8px;text-align:center;font-size:20px;font-weight:900;color:var(--green);background:white}.save{width:100%;border:0;border-radius:10px;margin-top:12px;padding:13px;background:var(--yellow);color:#102615;font-weight:950;cursor:pointer;box-shadow:0 5px 0 #d9a900}.note{color:#555;font-size:13px;line-height:1.45;margin:4px 0 14px}
+    
+    .admin-login,.admin-panel{background:white;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.04)}
+    .admin-field{margin-bottom:12px}
+    .admin-field label{display:block;font-size:13px;font-weight:900;color:var(--green);margin-bottom:6px}
+    .admin-field select,.admin-field input{width:100%;height:44px;border:2px solid var(--green);border-radius:8px;padding:0 10px;background:white;color:var(--text);font-size:15px;font-weight:700;text-align:left}
+    .admin-score{display:grid;grid-template-columns:1fr 54px 24px 54px 1fr;align-items:center;gap:8px;margin:14px 0}
+    .admin-score input{text-align:center}
+    .admin-team{text-align:center;font-weight:900;font-size:13px}
+    .admin-status{padding:10px;border-radius:8px;background:#fbf7ee;border:1px solid var(--line);font-size:13px;color:#555;margin-top:10px}
+
     @media(max-width:560px){.match-head{grid-template-columns:90px 1fr}.status{grid-column:1/-1;text-align:left;justify-self:start}.team-name{font-size:13px}.score-num{width:38px;height:38px}.tab{font-size:12px}.flag{width:52px;height:35px;font-size:26px}}
   </style>
 </head>
@@ -27,7 +37,7 @@
   <main class="app">
     <header class="hero"><div class="cup">🏆</div><h1>BOLÃO COPA 2026</h1><div class="family">Família Fatiche</div></header>
     <section class="score-strip" id="top-ranking"><div class="mini-rank"><div class="person">Carregando</div><div class="score">...</div><div class="label">pontos</div></div><div class="mini-rank"><div class="person">Carregando</div><div class="score">...</div><div class="label">pontos</div></div><div class="mini-rank"><div class="person">Carregando</div><div class="score">...</div><div class="label">pontos</div></div></section>
-    <nav class="tabs"><button class="tab active" data-target="jogos">⚽ JOGOS</button><button class="tab" data-target="palpites">🎯 PALPITES</button><button class="tab" data-target="ranking">🏆 RANKING</button><button class="tab" data-target="regras">📋 REGRAS</button></nav>
+    <nav class="tabs"><button class="tab active" data-target="jogos">⚽ JOGOS</button><button class="tab" data-target="palpites">🎯 PALPITES</button><button class="tab" data-target="ranking">🏆 RANKING</button><button class="tab" data-target="regras">📋 REGRAS</button><button class="tab" data-target="admin">⚙️ ADMIN</button></nav>
     <div class="content">
       <section id="jogos" class="section active"><div class="section-title">🌎 Jogos</div><div id="jogos-lista" class="loading">Carregando jogos...</div></section>
       <section id="palpites" class="section"><div class="section-title">🎯 Fazer palpite</div><p class="note" id="participante-info"></p><div id="palpites-lista" class="loading">Carregando jogos disponíveis...</div></section>
@@ -36,6 +46,46 @@
         <div class="rules-card"><div class="rules-title">⚽ Fase de grupos</div><div class="rule-row"><div class="rule-icon">⭐</div><div><div class="rule-main">Placar exato</div><div class="rule-sub">Acertou o placar certinho</div></div><div class="rule-points">3 pts</div></div><div class="rule-row"><div class="rule-icon">✓</div><div><div class="rule-main">Vencedor ou empate</div><div class="rule-sub">Acertou quem ganhou ou que empatou</div></div><div class="rule-points">1 pt</div></div><div class="rule-row"><div class="rule-icon">✕</div><div><div class="rule-main">Errou</div></div><div class="rule-points" style="color:#b7b7b7">0 pts</div></div></div>
         <div class="rules-card"><div class="rules-title">🏆 Mata-mata — pontuação dobrada</div><div class="rule-row"><div class="rule-icon">⭐</div><div><div class="rule-main">Placar exato</div><div class="rule-sub">Acertou o placar certinho</div></div><div class="rule-points">6 pts</div></div><div class="rule-row"><div class="rule-icon">✓</div><div><div class="rule-main">Vencedor ou empate no tempo normal</div></div><div class="rule-points">2 pts</div></div><div class="rule-row"><div class="rule-icon">✕</div><div><div class="rule-main">Errou</div></div><div class="rule-points" style="color:#b7b7b7">0 pts</div></div></div>
         <div class="rules-card"><div class="rules-title">📌 Outras regras</div><div class="rule-row"><div class="rule-icon">🔒</div><div class="rule-sub">Palpites bloqueiam automaticamente quando o jogo começa</div></div><div class="rule-row"><div class="rule-icon">👀</div><div class="rule-sub">Todos veem os palpites de todos em tempo real</div></div><div class="rule-row"><div class="rule-icon">⚙️</div><div class="rule-sub">Qualquer participante pode inserir resultados manualmente caso a API falhe</div></div></div>
+      </section>
+
+      <section id="admin" class="section">
+        <div class="section-title">⚙️ Painel Admin</div>
+
+        <div id="admin-login" class="admin-login">
+          <div class="admin-field">
+            <label>Senha do Admin</label>
+            <input id="admin-senha" type="password" placeholder="Digite a senha">
+          </div>
+          <button class="save" onclick="entrarAdmin()">Entrar no Admin</button>
+          <div class="admin-status">Use a senha combinada para lançar ou corrigir resultados.</div>
+        </div>
+
+        <div id="admin-panel" class="admin-panel" style="display:none;">
+          <div class="admin-field">
+            <label>Escolha o jogo</label>
+            <select id="admin-jogo" onchange="preencherAdminJogo()"></select>
+          </div>
+
+          <div class="admin-score">
+            <div class="admin-team" id="admin-time-a">Time A</div>
+            <input id="admin-gols-a" type="number" min="0" placeholder="0">
+            <div style="text-align:center;font-weight:950;">x</div>
+            <input id="admin-gols-b" type="number" min="0" placeholder="0">
+            <div class="admin-team" id="admin-time-b">Time B</div>
+          </div>
+
+          <div class="admin-field">
+            <label>Status</label>
+            <select id="admin-status">
+              <option value="aberto">🟢 Aberto para palpites</option>
+              <option value="andamento">🟡 Jogo em andamento</option>
+              <option value="finalizado">🏁 Finalizado</option>
+            </select>
+          </div>
+
+          <button class="save" onclick="salvarResultadoAdmin()">Salvar resultado</button>
+          <div class="admin-status" id="admin-msg">Ao salvar como finalizado, o ranking será atualizado automaticamente.</div>
+        </div>
       </section>
     </div>
   </main>
@@ -134,6 +184,90 @@
     }
     window.salvarPalpite=salvarPalpite;
 
+
+    function entrarAdmin(){
+      const senha = document.getElementById("admin-senha").value;
+      if(senha !== "bolao2026"){
+        alert("Senha incorreta.");
+        return;
+      }
+      document.getElementById("admin-login").style.display = "none";
+      document.getElementById("admin-panel").style.display = "block";
+      renderAdminJogos();
+    }
+
+    function renderAdminJogos(){
+      const select = document.getElementById("admin-jogo");
+      if(!select) return;
+
+      select.innerHTML = jogos.map(j=>{
+        const a = getSelecao(j.selecao_a);
+        const b = getSelecao(j.selecao_b);
+        const placar = j.gols_a === null || j.gols_b === null ? "sem resultado" : `${j.gols_a}x${j.gols_b}`;
+        return `<option value="${j.id}">${j.grupo ? "Grupo " + j.grupo + " - " : ""}${a.nome} x ${b.nome} (${placar})</option>`;
+      }).join("");
+
+      preencherAdminJogo();
+    }
+
+    function preencherAdminJogo(){
+      const id = document.getElementById("admin-jogo").value;
+      const j = jogos.find(x=>x.id===id);
+      if(!j) return;
+
+      const a = getSelecao(j.selecao_a);
+      const b = getSelecao(j.selecao_b);
+
+      document.getElementById("admin-time-a").innerHTML = `${a.bandeira || ""}<br>${a.nome}`;
+      document.getElementById("admin-time-b").innerHTML = `${b.bandeira || ""}<br>${b.nome}`;
+      document.getElementById("admin-gols-a").value = j.gols_a ?? "";
+      document.getElementById("admin-gols-b").value = j.gols_b ?? "";
+      document.getElementById("admin-status").value = j.status || "aberto";
+    }
+
+    async function salvarResultadoAdmin(){
+      const id = document.getElementById("admin-jogo").value;
+      const golsAInput = document.getElementById("admin-gols-a").value;
+      const golsBInput = document.getElementById("admin-gols-b").value;
+      const status = document.getElementById("admin-status").value;
+
+      let gols_a = golsAInput === "" ? null : Number(golsAInput);
+      let gols_b = golsBInput === "" ? null : Number(golsBInput);
+
+      if((gols_a !== null && (Number.isNaN(gols_a) || gols_a < 0)) || (gols_b !== null && (Number.isNaN(gols_b) || gols_b < 0))){
+        alert("Preencha os placares corretamente.");
+        return;
+      }
+
+      if(status === "finalizado" && (gols_a === null || gols_b === null)){
+        alert("Para finalizar um jogo, preencha os dois placares.");
+        return;
+      }
+
+      const { error } = await sb
+        .from("jogos")
+        .update({
+          gols_a,
+          gols_b,
+          status,
+          atualizado_em: new Date().toISOString()
+        })
+        .eq("id", id);
+
+      if(error){
+        alert("Erro ao salvar resultado: " + error.message);
+        return;
+      }
+
+      document.getElementById("admin-msg").innerText = "Resultado salvo com sucesso!";
+      await carregarDados();
+      renderAdminJogos();
+    }
+
+    window.entrarAdmin = entrarAdmin;
+    window.preencherAdminJogo = preencherAdminJogo;
+    window.salvarResultadoAdmin = salvarResultadoAdmin;
+
     async function carregarDados(){
       const [part,sel,jog,pal,rank]=await Promise.all([
         sb.from("participantes").select("*").order("nome"),
@@ -147,7 +281,7 @@
         console.error(part.error,sel.error,jog.error,pal.error,rank.error);return;
       }
       participantes=part.data||[]; selecoes=sel.data||[]; jogos=jog.data||[]; palpites=pal.data||[]; ranking=rank.data||[];
-      renderTopRanking(); renderRanking(); renderJogos(); renderPalpites();
+      renderTopRanking(); renderRanking(); renderJogos(); renderPalpites(); if(document.getElementById('admin-panel')?.style.display==='block'){ renderAdminJogos(); }
     }
     carregarDados();
   </script>
