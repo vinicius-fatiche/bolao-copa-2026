@@ -407,19 +407,53 @@ function renderJogos(){
       renderAdminJogos();
     }
 
-    function renderAdminJogos(){
-      const select = document.getElementById("admin-jogo");
-      if(!select) return;
+    let jogoAdminSelecionado = null;
 
-      select.innerHTML = jogos.map(j=>{
-        const a = getSelecao(j.selecao_a);
-        const b = getSelecao(j.selecao_b);
-        const placar = j.gols_a === null || j.gols_b === null ? "sem resultado" : `${j.gols_a}x${j.gols_b}`;
-        return `<option value="${j.id}">${j.grupo ? "Grupo " + j.grupo + " - " : ""}${a.nome} x ${b.nome} (${placar})</option>`;
-      }).join("");
+function renderAdminJogos(){
+  const c = document.getElementById("admin-jogos-pendentes");
+  if(!c) return;
 
-      preencherAdminJogo();
-    }
+  const pendentes = [...jogos]
+    .filter(j => j.gols_a === null || j.gols_b === null)
+    .sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
+
+  if(!pendentes.length){
+    c.innerHTML = `<div class="admin-status">Nenhum jogo pendente.</div>`;
+    return;
+  }
+
+  c.innerHTML = pendentes.map(j=>{
+    const a = timeDoJogo(j,"a");
+    const b = timeDoJogo(j,"b");
+
+    return `
+      <div class="admin-game-card">
+        <div>
+          <strong>${nomeFase(j)}</strong><br>
+          ${formatarData(j.data_hora)}<br>
+          ${a.nome} x ${b.nome}
+        </div>
+        <button class="mini-edit" onclick="editarResultadoAdmin('${j.id}')">Editar</button>
+      </div>
+    `;
+  }).join("");
+}
+
+function editarResultadoAdmin(id){
+  jogoAdminSelecionado = jogos.find(j=>j.id===id);
+  if(!jogoAdminSelecionado) return;
+
+  const a = timeDoJogo(jogoAdminSelecionado,"a");
+  const b = timeDoJogo(jogoAdminSelecionado,"b");
+
+  document.getElementById("admin-editor").style.display = "block";
+  document.getElementById("admin-time-a").innerHTML = `${a.bandeira || ""}<br>${a.nome}`;
+  document.getElementById("admin-time-b").innerHTML = `${b.bandeira || ""}<br>${b.nome}`;
+  document.getElementById("admin-gols-a").value = jogoAdminSelecionado.gols_a ?? "";
+  document.getElementById("admin-gols-b").value = jogoAdminSelecionado.gols_b ?? "";
+
+  document.getElementById("admin-editor").scrollIntoView({behavior:"smooth"});
+}
 
     function preencherAdminJogo(){
       const id = document.getElementById("admin-jogo").value;
