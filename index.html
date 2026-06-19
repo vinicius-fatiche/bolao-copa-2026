@@ -37,6 +37,19 @@
     .admin-status{padding:10px;border-radius:8px;background:#fbf7ee;border:1px solid var(--line);font-size:13px;color:#555;margin-top:10px}
 
     @media(max-width:560px){.match-head{grid-template-columns:90px 1fr}.status{grid-column:1/-1;text-align:left;justify-self:start}.team-name{font-size:13px}.score-num{width:38px;height:38px}.tab{font-size:12px}.flag{width:52px;height:35px;font-size:26px}}
+
+    .team-history{
+  margin-top:6px;
+  font-size:11px;
+  line-height:1.25;
+  color:#666;
+  font-weight:700;
+}
+
+.team-history-line{
+  margin-top:2px;
+}
+    
   </style>
 </head>
 <body>
@@ -328,7 +341,30 @@ function renderJogos(){
     return `<article class="match-card"><div class="match-head"><div class="group-pill">${nomeFase(j)}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status ${st.classe}">${st.texto}</div></div><div class="match-body"><div class="team"><div class="flag">${a.bandeira||a.codigo}</div><div class="team-name">${a.nome}</div></div><div class="scorebox"><div class="score-num">${j.gols_a??"?"}</div><span>x</span><div class="score-num">${j.gols_b??"?"}</div></div><div class="team"><div class="flag">${b.bandeira||b.codigo}</div><div class="team-name">${b.nome}</div></div></div><div class="prediction-grid">${preds}</div>${jogoAberto(j)?'<div class="locked">🔒 Palpites bloqueiam automaticamente quando o jogo começa</div>':""}</article>`;
   }).join("");
 }
+    
+    function historicoTime(codigo, jogoAtualId){
+  return jogos
+    .filter(j =>
+      j.id !== jogoAtualId &&
+      j.status === "finalizado" &&
+      j.gols_a !== null &&
+      j.gols_b !== null &&
+      (j.selecao_a === codigo || j.selecao_b === codigo)
+    )
+    .sort((a,b)=>new Date(b.data_hora)-new Date(a.data_hora))
+    .slice(0,2)
+    .map(j=>{
+      const adversarioCodigo = j.selecao_a === codigo ? j.selecao_b : j.selecao_a;
+      const adversario = getSelecao(adversarioCodigo);
 
+      const golsTime = j.selecao_a === codigo ? j.gols_a : j.gols_b;
+      const golsAdv = j.selecao_a === codigo ? j.gols_b : j.gols_a;
+
+      return `<div class="team-history-line">${golsTime} x ${golsAdv} ${adversario.nome}</div>`;
+    })
+    .join("") || `<div class="team-history-line">Sem histórico</div>`;
+}
+    
     function renderPalpites(){
       participanteAtual=participantes.find(p=>p.slug===slugPelaUrl);
       document.getElementById("participante-info").innerHTML = participanteAtual ? `Você está palpitando como: <strong>${participanteAtual.nome}</strong>.` : 'Para salvar palpites, acesse com <strong>?p=vinicius</strong>, <strong>?p=evelyn</strong> ou <strong>?p=helena</strong>.';
@@ -337,7 +373,15 @@ function renderJogos(){
       c.classList.remove("loading");
       c.innerHTML=abertos.map(j=>{
         const a=getSelecao(j.selecao_a), b=getSelecao(j.selecao_b), pal=participanteAtual?getPalpite(j.id,participanteAtual.id):null;
-        return `<article class="match-card"><div class="match-head"><div class="group-pill">${j.grupo?`Grupo ${j.grupo}`:j.fase}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status open">🟢 Aberto para palpites</div></div><div class="match-body"><div class="team"><div class="flag">${a.bandeira||a.codigo}</div><div class="team-name">${a.nome}</div></div><div class="scorebox"><input id="a-${j.id}" type="number" min="0" value="${pal?pal.gols_a:""}"><span>x</span><input id="b-${j.id}" type="number" min="0" value="${pal?pal.gols_b:""}"></div><div class="team"><div class="flag">${b.bandeira||b.codigo}</div><div class="team-name">${b.nome}</div></div></div><div class="locked">🔒 Depois que o jogo começar, não será possível alterar o palpite.</div><div style="padding:0 12px 14px"><button class="save" onclick="salvarPalpite('${j.id}')" ${participanteAtual?"":"disabled"}>Salvar palpite</button></div></article>`;
+        return `<article class="match-card"><div class="match-head"><div class="group-pill">${j.grupo?`Grupo ${j.grupo}`:j.fase}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status open">🟢 Aberto para palpites</div></div><div class="match-body"><div class="team">
+  <div class="flag">${a.bandeira||a.codigo}</div>
+  <div class="team-name">${a.nome}</div>
+  <div class="team-history">${historicoTime(j.selecao_a, j.id)}</div>
+</div><div class="scorebox"><input id="a-${j.id}" type="number" min="0" value="${pal?pal.gols_a:""}"><span>x</span><input id="b-${j.id}" type="number" min="0" value="${pal?pal.gols_b:""}"></div><div class="team">
+  <div class="flag">${b.bandeira||b.codigo}</div>
+  <div class="team-name">${b.nome}</div>
+  <div class="team-history">${historicoTime(j.selecao_b, j.id)}</div>
+</div></div><div class="locked">🔒 Depois que o jogo começar, não será possível alterar o palpite.</div><div style="padding:0 12px 14px"><button class="save" onclick="salvarPalpite('${j.id}')" ${participanteAtual?"":"disabled"}>Salvar palpite</button></div></article>`;
       }).join("");
     }
     async function salvarPalpite(jogoId){
