@@ -448,6 +448,42 @@ function renderJogos(){
 
     let jogoAdminSelecionado = null;
 
+function cardAdminJogo(j, textoBotao){
+  const a = timeDoJogo(j,"a");
+  const b = timeDoJogo(j,"b");
+
+  return `
+    <div class="admin-game-card">
+      <div class="admin-game-head">
+        <span>${nomeFase(j)}</span>
+        <span>${formatarData(j.data_hora)}</span>
+      </div>
+
+      <div class="admin-game-body">
+        <div class="team">
+          <div class="flag">${a.bandeira || a.codigo}</div>
+          <div class="team-name">${a.nome}</div>
+        </div>
+
+        <div class="scorebox">
+          <div class="score-num">${j.gols_a ?? "?"}</div>
+          <span>x</span>
+          <div class="score-num">${j.gols_b ?? "?"}</div>
+        </div>
+
+        <div class="team">
+          <div class="flag">${b.bandeira || b.codigo}</div>
+          <div class="team-name">${b.nome}</div>
+        </div>
+      </div>
+
+      <button class="mini-edit" onclick="editarResultadoAdmin('${j.id}')">
+        ${textoBotao}
+      </button>
+    </div>
+  `;
+}
+
 function renderAdminJogos(){
   const c = document.getElementById("admin-jogos-pendentes");
   if(!c) return;
@@ -456,50 +492,25 @@ function renderAdminJogos(){
     .filter(j => j.gols_a === null || j.gols_b === null)
     .sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
 
-  if(!pendentes.length){
-    c.innerHTML = `<div class="admin-status">Nenhum jogo pendente.</div>`;
-    return;
-  }
+  const finalizados = [...jogos]
+    .filter(j => j.gols_a !== null && j.gols_b !== null)
+    .sort((a,b)=>new Date(b.data_hora)-new Date(a.data_hora));
 
-  c.innerHTML = pendentes.map(j=>{
-    const a = timeDoJogo(j,"a");
-    const b = timeDoJogo(j,"b");
+  const htmlPendentes = pendentes.length
+    ? pendentes.map(j => cardAdminJogo(j, "✏️ Editar resultado")).join("")
+    : `<div class="admin-status">Nenhum jogo pendente.</div>`;
 
-    return `
-  <div class="admin-game-card">
+  const htmlFinalizados = finalizados.length
+    ? finalizados.map(j => cardAdminJogo(j, "🔁 Corrigir resultado")).join("")
+    : `<div class="admin-status">Nenhum jogo finalizado.</div>`;
 
-    <div class="admin-game-head">
-      <span>${nomeFase(j)}</span>
-      <span>${formatarData(j.data_hora)}</span>
-    </div>
+  c.innerHTML = `
+    <div class="section-title">🔴 Jogos sem resultado</div>
+    ${htmlPendentes}
 
-    <div class="admin-game-body">
-
-      <div class="team">
-        <div class="flag">${a.bandeira || a.codigo}</div>
-        <div class="team-name">${a.nome}</div>
-      </div>
-
-      <div class="scorebox">
-        <div class="score-num">?</div>
-        <span>x</span>
-        <div class="score-num">?</div>
-      </div>
-
-      <div class="team">
-        <div class="flag">${b.bandeira || b.codigo}</div>
-        <div class="team-name">${b.nome}</div>
-      </div>
-
-    </div>
-
-    <button class="mini-edit" onclick="editarResultadoAdmin('${j.id}')">
-      ✏️ Editar resultado
-    </button>
-
-  </div>
-`;
-  }).join("");
+    <div class="section-title" style="margin-top:20px;">✅ Jogos finalizados</div>
+    ${htmlFinalizados}
+  `;
 }
 
 function editarResultadoAdmin(id){
