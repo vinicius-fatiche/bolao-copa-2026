@@ -471,46 +471,50 @@ function editarResultadoAdmin(id){
     }
 
     async function salvarResultadoAdmin(){
-      const id = document.getElementById("admin-jogo").value;
-      const golsAInput = document.getElementById("admin-gols-a").value;
-      const golsBInput = document.getElementById("admin-gols-b").value;
-      const status = document.getElementById("admin-status").value;
 
-      let gols_a = golsAInput === "" ? null : Number(golsAInput);
-      let gols_b = golsBInput === "" ? null : Number(golsBInput);
+  if(!jogoAdminSelecionado){
+    alert("Escolha um jogo primeiro.");
+    return;
+  }
 
-      if((gols_a !== null && (Number.isNaN(gols_a) || gols_a < 0)) || (gols_b !== null && (Number.isNaN(gols_b) || gols_b < 0))){
-        alert("Preencha os placares corretamente.");
-        return;
-      }
+  const golsAInput = document.getElementById("admin-gols-a").value;
+  const golsBInput = document.getElementById("admin-gols-b").value;
 
-      if(status === "finalizado" && (gols_a === null || gols_b === null)){
-        alert("Para finalizar um jogo, preencha os dois placares.");
-        return;
-      }
+  const gols_a = Number(golsAInput);
+  const gols_b = Number(golsBInput);
 
-      const { error } = await sb
-        .from("jogos")
-        .update({
-          gols_a,
-          gols_b,
-          status,
-          atualizado_em: new Date().toISOString()
-        })
-        .eq("id", id);
+  if(golsAInput === "" || golsBInput === ""){
+    alert("Preencha os dois placares.");
+    return;
+  }
 
-      if(error){
-        alert("Erro ao salvar resultado: " + error.message);
-        return;
-      }
+  const { error } = await sb
+    .from("jogos")
+    .update({
+      gols_a,
+      gols_b,
+      status: "finalizado",
+      atualizado_em: new Date().toISOString()
+    })
+    .eq("id", jogoAdminSelecionado.id);
 
-      document.getElementById("admin-msg").innerText = "Resultado salvo com sucesso!";
-      await carregarDados();
-      renderAdminJogos();
-    }
+  if(error){
+    alert("Erro ao salvar resultado: " + error.message);
+    return;
+  }
+
+  document.getElementById("admin-msg").innerText =
+    "Resultado salvo com sucesso!";
+
+  document.getElementById("admin-editor").style.display = "none";
+
+  jogoAdminSelecionado = null;
+
+  await carregarDados();
+  renderAdminJogos();
+}
 
     window.entrarAdmin = entrarAdmin;
-    window.preencherAdminJogo = preencherAdminJogo;
     window.salvarResultadoAdmin = salvarResultadoAdmin;
 
     async function carregarDados(){
