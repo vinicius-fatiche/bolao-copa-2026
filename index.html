@@ -158,16 +158,12 @@
   <div id="admin-panel" class="admin-panel" style="display:none;">
     <div class="section-title">🔴 Jogos sem resultado</div>
 
-    <div id="admin-jogos-pendentes"></div>
+    <div class="subtabs">
+  <button class="subtab active" data-admin-filtro="pendentes">🔴 Pendentes</button>
+  <button class="subtab" data-admin-filtro="finalizados">✅ Finalizados</button>
+</div>
 
-    <div id="admin-editor" style="display:none; margin-top:16px;">
-      <div class="admin-score">
-        <div class="admin-team" id="admin-time-a">Time A</div>
-        <input id="admin-gols-a" type="number" min="0" placeholder="0">
-        <div style="text-align:center;font-weight:950;">x</div>
-        <input id="admin-gols-b" type="number" min="0" placeholder="0">
-        <div class="admin-team" id="admin-time-b">Time B</div>
-      </div>
+<div id="admin-jogos-pendentes"></div>
 
       <button class="save" onclick="salvarResultadoAdmin()">Salvar resultado</button>
 
@@ -448,7 +444,7 @@ function renderJogos(){
 
     let jogoAdminSelecionado = null;
 
-function cardAdminJogo(j, textoBotao){
+function cardAdminJogo(j){
   const a = timeDoJogo(j,"a");
   const b = timeDoJogo(j,"b");
 
@@ -466,9 +462,9 @@ function cardAdminJogo(j, textoBotao){
         </div>
 
         <div class="scorebox">
-          <div class="score-num">${j.gols_a ?? "?"}</div>
+          <input id="admin-a-${j.id}" type="number" min="0" value="${j.gols_a ?? ""}" placeholder="0">
           <span>x</span>
-          <div class="score-num">${j.gols_b ?? "?"}</div>
+          <input id="admin-b-${j.id}" type="number" min="0" value="${j.gols_b ?? ""}" placeholder="0">
         </div>
 
         <div class="team">
@@ -477,8 +473,8 @@ function cardAdminJogo(j, textoBotao){
         </div>
       </div>
 
-      <button class="mini-edit" onclick="editarResultadoAdmin('${j.id}')">
-        ${textoBotao}
+      <button class="mini-edit" onclick="salvarResultadoAdmin('${j.id}')">
+        Salvar resultado
       </button>
     </div>
   `;
@@ -488,29 +484,19 @@ function renderAdminJogos(){
   const c = document.getElementById("admin-jogos-pendentes");
   if(!c) return;
 
-  const pendentes = [...jogos]
-    .filter(j => j.gols_a === null || j.gols_b === null)
+  const lista = [...jogos]
+    .filter(j => {
+      const finalizado = j.gols_a !== null && j.gols_b !== null;
+      return adminFiltro === "finalizados" ? finalizado : !finalizado;
+    })
     .sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
 
-  const finalizados = [...jogos]
-    .filter(j => j.gols_a !== null && j.gols_b !== null)
-    .sort((a,b)=>new Date(b.data_hora)-new Date(a.data_hora));
+  if(!lista.length){
+    c.innerHTML = `<div class="admin-status">Nenhum jogo nesta lista.</div>`;
+    return;
+  }
 
-  const htmlPendentes = pendentes.length
-    ? pendentes.map(j => cardAdminJogo(j, "✏️ Editar resultado")).join("")
-    : `<div class="admin-status">Nenhum jogo pendente.</div>`;
-
-  const htmlFinalizados = finalizados.length
-    ? finalizados.map(j => cardAdminJogo(j, "🔁 Corrigir resultado")).join("")
-    : `<div class="admin-status">Nenhum jogo finalizado.</div>`;
-
-  c.innerHTML = `
-    <div class="section-title">🔴 Jogos sem resultado</div>
-    ${htmlPendentes}
-
-    <div class="section-title" style="margin-top:20px;">✅ Jogos finalizados</div>
-    ${htmlFinalizados}
-  `;
+  c.innerHTML = lista.map(j=>cardAdminJogo(j)).join("");
 }
 
 function editarResultadoAdmin(id){
