@@ -156,20 +156,16 @@
   </div>
 
   <div id="admin-panel" class="admin-panel" style="display:none;">
-    <div class="section-title">🔴 Jogos sem resultado</div>
+  <div class="section-title">🔴 Jogos sem resultado</div>
 
-    <div class="subtabs">
-  <button class="subtab active" data-admin-filtro="pendentes">🔴 Pendentes</button>
-  <button class="subtab" data-admin-filtro="finalizados">✅ Finalizados</button>
+  <div class="subtabs">
+    <button class="subtab active" data-admin-filtro="pendentes">🔴 Pendentes</button>
+    <button class="subtab" data-admin-filtro="finalizados">✅ Finalizados</button>
+  </div>
+
+  <div id="admin-jogos-pendentes"></div>
 </div>
 
-<div id="admin-jogos-pendentes"></div>
-
-      <button class="save" onclick="salvarResultadoAdmin()">Salvar resultado</button>
-
-      <div class="admin-status" id="admin-msg">
-        Ao salvar, o jogo será marcado como finalizado.
-      </div>
     </div>
   </div>
 </section>
