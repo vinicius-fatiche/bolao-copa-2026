@@ -133,9 +133,10 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxYWhxbmppZmRlbXhlenZkamNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MDA1NTYsImV4cCI6MjA5NzI3NjU1Nn0.afyY7uXbZOjh8EeV0gRJRo4NpSbBKS3MEHYDGApD0ZA";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let participantes=[], selecoes=[], jogos=[], palpites=[], ranking=[];
-    let filtroJogosAtual = "hoje";
-    let grupoAtual = "A";
+   let participantes=[], selecoes=[], jogos=[], palpites=[], ranking=[];
+let filtroJogosAtual = "hoje";
+let grupoAtual = "A";
+let faseAtual = null;
     const params = new URLSearchParams(window.location.search);
     const slugPelaUrl = params.get("p") || window.location.pathname.replace("/","").toLowerCase();
     let participanteAtual = null;
@@ -157,8 +158,7 @@
       });
     });
 
-    let grupoAtual = "A";
-let faseAtual = null;
+    let faseAtual = null;
 
 document.querySelectorAll(".grupo-btn").forEach(btn=>{
   btn.addEventListener("click",()=>{
