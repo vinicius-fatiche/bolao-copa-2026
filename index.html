@@ -101,70 +101,43 @@
       </section>
 
       <section id="admin" class="section">
-        <div class="section-title">⚙️ Painel Admin</div>
+  <div class="section-title">⚙️ Painel Admin</div>
 
-        <div id="admin-login" class="admin-login">
-          <div class="admin-field">
-            <label>Senha do Admin</label>
-            <input id="admin-senha" type="password" placeholder="Digite a senha">
-          </div>
-          <button class="save" onclick="entrarAdmin()">Entrar no Admin</button>
-          <div class="admin-status">Use a senha combinada para lançar ou corrigir resultados.</div>
-        </div>
-
-        <div id="admin-panel" class="admin-panel" style="display:none;">
-
-  <div class="section-title">🔴 Jogos sem resultado</div>
-
-  <div id="admin-jogos-pendentes"></div>
-
-  <div id="admin-editor" style="display:none; margin-top:16px;">
-
-    <div class="admin-score">
-      <div class="admin-team" id="admin-time-a">Time A</div>
-
-      <input id="admin-gols-a" type="number" min="0" placeholder="0">
-
-      <div style="text-align:center;font-weight:950;">x</div>
-
-      <input id="admin-gols-b" type="number" min="0" placeholder="0">
-
-      <div class="admin-team" id="admin-time-b">Time B</div>
+  <div id="admin-login" class="admin-login">
+    <div class="admin-field">
+      <label>Senha do Admin</label>
+      <input id="admin-senha" type="password" placeholder="Digite a senha">
     </div>
 
-    <button class="save" onclick="salvarResultadoAdmin()">
-      Salvar resultado
-    </button>
+    <button class="save" onclick="entrarAdmin()">Entrar no Admin</button>
 
-    <div class="admin-status" id="admin-msg">
-      Ao salvar, o jogo será marcado como finalizado.
+    <div class="admin-status">
+      Use a senha combinada para lançar ou corrigir resultados.
     </div>
-
   </div>
 
-</div>
+  <div id="admin-panel" class="admin-panel" style="display:none;">
+    <div class="section-title">🔴 Jogos sem resultado</div>
 
-          <div class="admin-score">
-            <div class="admin-team" id="admin-time-a">Time A</div>
-            <input id="admin-gols-a" type="number" min="0" placeholder="0">
-            <div style="text-align:center;font-weight:950;">x</div>
-            <input id="admin-gols-b" type="number" min="0" placeholder="0">
-            <div class="admin-team" id="admin-time-b">Time B</div>
-          </div>
+    <div id="admin-jogos-pendentes"></div>
 
-          <div class="admin-field">
-            <label>Status</label>
-            <select id="admin-status">
-              <option value="aberto">🟢 Aberto para palpites</option>
-              <option value="andamento">🟡 Jogo em andamento</option>
-              <option value="finalizado">🏁 Finalizado</option>
-            </select>
-          </div>
+    <div id="admin-editor" style="display:none; margin-top:16px;">
+      <div class="admin-score">
+        <div class="admin-team" id="admin-time-a">Time A</div>
+        <input id="admin-gols-a" type="number" min="0" placeholder="0">
+        <div style="text-align:center;font-weight:950;">x</div>
+        <input id="admin-gols-b" type="number" min="0" placeholder="0">
+        <div class="admin-team" id="admin-time-b">Time B</div>
+      </div>
 
-          <button class="save" onclick="salvarResultadoAdmin()">Salvar resultado</button>
-          <div class="admin-status" id="admin-msg">Ao salvar como finalizado, o ranking será atualizado automaticamente.</div>
-        </div>
-      </section>
+      <button class="save" onclick="salvarResultadoAdmin()">Salvar resultado</button>
+
+      <div class="admin-status" id="admin-msg">
+        Ao salvar, o jogo será marcado como finalizado.
+      </div>
+    </div>
+  </div>
+</section>
     </div>
   </main>
   <script>
