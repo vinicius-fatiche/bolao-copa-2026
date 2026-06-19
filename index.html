@@ -49,26 +49,33 @@
         <div class="section-title">🌎 Jogos</div>
 
         <div class="subtabs">
+          <button class="subtab" data-filtro="ontem">⏪ Ontem</button>
           <button class="subtab active" data-filtro="hoje">🔥 Hoje</button>
           <button class="subtab" data-filtro="amanha">📅 Amanhã</button>
-          <button class="subtab" data-filtro="ontem">⏪ Ontem</button>
           <button class="subtab" data-filtro="proximos">📚 Demais jogos</button>
         </div>
 
         <div id="grupo-selector" class="grupo-selector" style="display:none;">
-          <button class="grupo-btn active" data-grupo="A">A</button>
-          <button class="grupo-btn" data-grupo="B">B</button>
-          <button class="grupo-btn" data-grupo="C">C</button>
-          <button class="grupo-btn" data-grupo="D">D</button>
-          <button class="grupo-btn" data-grupo="E">E</button>
-          <button class="grupo-btn" data-grupo="F">F</button>
-          <button class="grupo-btn" data-grupo="G">G</button>
-          <button class="grupo-btn" data-grupo="H">H</button>
-          <button class="grupo-btn" data-grupo="I">I</button>
-          <button class="grupo-btn" data-grupo="J">J</button>
-          <button class="grupo-btn" data-grupo="K">K</button>
-          <button class="grupo-btn" data-grupo="L">L</button>
-        </div>
+  <button class="grupo-btn active" data-grupo="A">A</button>
+  <button class="grupo-btn" data-grupo="B">B</button>
+  <button class="grupo-btn" data-grupo="C">C</button>
+  <button class="grupo-btn" data-grupo="D">D</button>
+  <button class="grupo-btn" data-grupo="E">E</button>
+  <button class="grupo-btn" data-grupo="F">F</button>
+  <button class="grupo-btn" data-grupo="G">G</button>
+  <button class="grupo-btn" data-grupo="H">H</button>
+  <button class="grupo-btn" data-grupo="I">I</button>
+  <button class="grupo-btn" data-grupo="J">J</button>
+  <button class="grupo-btn" data-grupo="K">K</button>
+  <button class="grupo-btn" data-grupo="L">L</button>
+
+  <button class="grupo-btn" data-fase="16avos">16-avos</button>
+  <button class="grupo-btn" data-fase="oitavas">Oitavas</button>
+  <button class="grupo-btn" data-fase="quartas">Quartas</button>
+  <button class="grupo-btn" data-fase="semifinal">Semi</button>
+  <button class="grupo-btn" data-fase="terceiro_lugar">3º Lugar</button>
+  <button class="grupo-btn" data-fase="final">Final</button>
+</div>
 
         <div id="jogos-lista" class="loading">Carregando jogos...</div>
       </section>
@@ -150,13 +157,21 @@
       });
     });
 
-    document.querySelectorAll(".grupo-btn").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        grupoAtual = btn.dataset.grupo;
-        document.querySelectorAll(".grupo-btn").forEach(b=>b.classList.toggle("active",b===btn));
-        renderJogos();
-      });
-    });
+    let grupoAtual = "A";
+let faseAtual = null;
+
+document.querySelectorAll(".grupo-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+
+    grupoAtual = btn.dataset.grupo || null;
+    faseAtual = btn.dataset.fase || null;
+
+    document.querySelectorAll(".grupo-btn")
+      .forEach(b=>b.classList.toggle("active",b===btn));
+
+    renderJogos();
+  });
+});
 
     function formatarData(iso){return new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));}
     function codigoParaBandeira(codigo){
@@ -231,8 +246,13 @@
   }
 
   if(filtroJogosAtual === "proximos"){
-    return lista.filter(j=>j.fase === "grupos" && j.grupo === grupoAtual);
+
+  if(faseAtual){
+    return lista.filter(j=>j.fase === faseAtual);
   }
+
+  return lista.filter(j=>j.fase === "grupos" && j.grupo === grupoAtual);
+}
 
   if(filtroJogosAtual === "16avos"){
     return lista.filter(j=>j.fase === "16avos");
