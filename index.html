@@ -210,36 +210,60 @@
     }
 
     function filtrarJogos(){
-      const hoje = new Date();
-      const ontem = new Date();
-      ontem.setDate(hoje.getDate() - 1);
-      const amanha = new Date();
-      amanha.setDate(hoje.getDate() + 1);
+  const hoje = new Date();
+  const ontem = new Date();
+  ontem.setDate(hoje.getDate() - 1);
+  const amanha = new Date();
+  amanha.setDate(hoje.getDate() + 1);
 
-      let lista = [...jogos].sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
+  let lista = [...jogos].sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
 
-      if(filtroJogosAtual === "hoje"){
-        return lista.filter(j=>mesmoDia(j.data_hora, hoje));
-      }
+  if(filtroJogosAtual === "hoje"){
+    return lista.filter(j=>mesmoDia(j.data_hora, hoje));
+  }
 
-      if(filtroJogosAtual === "amanha"){
-        return lista.filter(j=>mesmoDia(j.data_hora, amanha));
-      }
+  if(filtroJogosAtual === "amanha"){
+    return lista.filter(j=>mesmoDia(j.data_hora, amanha));
+  }
 
-      if(filtroJogosAtual === "ontem"){
-        return lista.filter(j=>mesmoDia(j.data_hora, ontem));
-      }
+  if(filtroJogosAtual === "ontem"){
+    return lista.filter(j=>mesmoDia(j.data_hora, ontem));
+  }
 
-      if(filtroJogosAtual === "proximos"){
-        return lista.filter(j=>j.grupo === grupoAtual);
-      }
+  if(filtroJogosAtual === "proximos"){
+    return lista.filter(j=>j.fase === "grupos" && j.grupo === grupoAtual);
+  }
 
-      return lista;
-    }
+  if(filtroJogosAtual === "16avos"){
+    return lista.filter(j=>j.fase === "16avos");
+  }
 
-    function nomeFase(j){
+  if(filtroJogosAtual === "oitavas"){
+    return lista.filter(j=>j.fase === "oitavas");
+  }
+
+  if(filtroJogosAtual === "quartas"){
+    return lista.filter(j=>j.fase === "quartas");
+  }
+
+  if(filtroJogosAtual === "semifinal"){
+    return lista.filter(j=>j.fase === "semifinal");
+  }
+
+  if(filtroJogosAtual === "terceiro_lugar"){
+    return lista.filter(j=>j.fase === "terceiro_lugar");
+  }
+
+  if(filtroJogosAtual === "final"){
+    return lista.filter(j=>j.fase === "final");
+  }
+
+  return lista;
+}
+
+function nomeFase(j){
   if(j.fase === "grupos") return j.grupo ? `Grupo ${j.grupo}` : "Fase de grupos";
-  if(j.fase === "segunda_fase") return `Segunda fase ${j.numero_jogo || ""}`;
+  if(j.fase === "16avos") return `16-avos ${j.numero_jogo || ""}`;
   if(j.fase === "oitavas") return `Oitavas ${j.numero_jogo || ""}`;
   if(j.fase === "quartas") return `Quartas ${j.numero_jogo || ""}`;
   if(j.fase === "semifinal") return `Semifinal ${j.numero_jogo || ""}`;
