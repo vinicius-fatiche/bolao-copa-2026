@@ -530,23 +530,17 @@ function editarResultadoAdmin(id){
       document.getElementById("admin-status").value = j.status || "aberto";
     }
 
-    async function salvarResultadoAdmin(){
-
-  if(!jogoAdminSelecionado){
-    alert("Escolha um jogo primeiro.");
-    return;
-  }
-
-  const golsAInput = document.getElementById("admin-gols-a").value;
-  const golsBInput = document.getElementById("admin-gols-b").value;
-
-  const gols_a = Number(golsAInput);
-  const gols_b = Number(golsBInput);
+    async function salvarResultadoAdmin(id){
+  const golsAInput = document.getElementById(`admin-a-${id}`).value;
+  const golsBInput = document.getElementById(`admin-b-${id}`).value;
 
   if(golsAInput === "" || golsBInput === ""){
     alert("Preencha os dois placares.");
     return;
   }
+
+  const gols_a = Number(golsAInput);
+  const gols_b = Number(golsBInput);
 
   const { error } = await sb
     .from("jogos")
@@ -556,26 +550,19 @@ function editarResultadoAdmin(id){
       status: "finalizado",
       atualizado_em: new Date().toISOString()
     })
-    .eq("id", jogoAdminSelecionado.id);
+    .eq("id", id);
 
   if(error){
     alert("Erro ao salvar resultado: " + error.message);
     return;
   }
 
-  document.getElementById("admin-msg").innerText =
-    "Resultado salvo com sucesso!";
-
-  document.getElementById("admin-editor").style.display = "none";
-
-  jogoAdminSelecionado = null;
-
   await carregarDados();
   renderAdminJogos();
 }
 
     window.entrarAdmin = entrarAdmin;
-    window.salvarResultadoAdmin = salvarResultadoAdmin;
+window.salvarResultadoAdmin = salvarResultadoAdmin;
 
     async function carregarDados(){
       const [part,sel,jog,pal,rank]=await Promise.all([
