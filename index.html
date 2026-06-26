@@ -394,38 +394,129 @@ function renderJogos(){
     })
     .join("") || `<div class="team-history-line">Sem histórico</div>`;
 }
+
+    let modoAdminPalpites = false;
+let participanteAdminSlug = "helena";
+let mostrarTodosJogosPalpites = false;
     
     function renderPalpites(){
-      participanteAtual=participantes.find(p=>p.slug===slugPelaUrl);
-      document.getElementById("participante-info").innerHTML = participanteAtual ? `Você está palpitando como: <strong>${participanteAtual.nome}</strong>.` : 'Para salvar palpites, acesse com <strong>?p=vinicius</strong>, <strong>?p=evelyn</strong> ou <strong>?p=helena</strong>.';
-      const abertos=jogos.filter(jogoAberto), c=document.getElementById("palpites-lista");
-      if(!abertos.length){c.innerHTML='<div class="loading">Nenhum jogo aberto para palpite no momento.</div>';return;}
-      c.classList.remove("loading");
-      c.innerHTML=abertos.map(j=>{
-        const a=getSelecao(j.selecao_a), b=getSelecao(j.selecao_b), pal=participanteAtual?getPalpite(j.id,participanteAtual.id):null;
-        return `<article class="match-card"><div class="match-head"><div class="group-pill">${j.grupo?`Grupo ${j.grupo}`:j.fase}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status open">🟢 Aberto para palpites</div></div><div class="match-body"><div class="team">
-  <div class="flag">${a.bandeira||a.codigo}</div>
-  <div class="team-name">${a.nome}</div>
-  <div class="team-history">${historicoTime(j.selecao_a, j.id)}</div>
-</div><div class="scorebox"><input id="a-${j.id}" type="number" min="0" value="${pal?pal.gols_a:""}"><span>x</span><input id="b-${j.id}" type="number" min="0" value="${pal?pal.gols_b:""}"></div><div class="team">
-  <div class="flag">${b.bandeira||b.codigo}</div>
-  <div class="team-name">${b.nome}</div>
-  <div class="team-history">${historicoTime(j.selecao_b, j.id)}</div>
-</div></div><div style="padding:0 12px 14px"><button class="save" onclick="salvarPalpite('${j.id}')" ${participanteAtual?"":"disabled"}>Salvar palpite</button></div></article>`;
-      }).join("");
-    }
-    async function salvarPalpite(jogoId){
-      if(!participanteAtual){alert("Acesse com ?p=vinicius, ?p=evelyn ou ?p=helena.");return;}
-      const j=jogos.find(x=>x.id===jogoId);
-      if(!jogoAberto(j)){alert("Este jogo já começou.");return;}
-      const ga=Number(document.getElementById(`a-${jogoId}`).value), gb=Number(document.getElementById(`b-${jogoId}`).value);
-      if(Number.isNaN(ga)||Number.isNaN(gb)||ga<0||gb<0){alert("Preencha os dois placares.");return;}
-      const {error}=await sb.from("palpites").upsert({jogo_id:jogoId,participante_id:participanteAtual.id,gols_a:ga,gols_b:gb,atualizado_em:new Date().toISOString()},{onConflict:"jogo_id,participante_id"});
-      if(error){alert("Erro ao salvar: "+error.message);return;}
-      alert("Palpite salvo!"); await carregarDados();
-    }
-    window.salvarPalpite=salvarPalpite;
+  participanteAtual=participantes.find(p=>p.slug===slugPelaUrl);
 
+  const adminBox = modoAdminPalpites ? `
+    <div class="admin-panel" style="margin-bottom:12px;">
+      <div class="section-title">👑 Modo Administrador</div>
+
+      <div class="admin-field">
+        <label>Participante</label>
+        <select id="admin-participante-palpite" onchange="trocarParticipanteAdminPalpite(this.value)">
+          ${participantes.map(p=>`
+            <option value="${p.slug}" ${p.slug===participanteAdminSlug?"selected":""}>
+              ${p.nome}
+            </option>
+          `).join("")}
+        </select>
+      </div>
+
+      <label style="display:flex;gap:8px;align-items:center;font-size:13px;font-weight:800;">
+        <input type="checkbox" ${mostrarTodosJogosPalpites?"checked":""} onchange="toggleTodosJogosPalpites(this.checked)" style="width:auto;height:auto;">
+        Mostrar todos os jogos
+      </label>
+    </div>
+  ` : "";
+
+  if(modoAdminPalpites){
+    participanteAtual = participantes.find(p=>p.slug===participanteAdminSlug);
+    document.getElementById("participante-info").innerHTML = adminBox;
+  } else {
+    document.getElementById("participante-info").innerHTML = participanteAtual
+      ? `Você está palpitando como: <strong>${participanteAtual.nome}</strong>.`
+      : 'Para salvar palpites, acesse com <strong>?p=vinicius</strong>, <strong>?p=evelyn</strong> ou <strong>?p=helena</strong>.';
+  }
+
+  const listaJogos = mostrarTodosJogosPalpites
+    ? [...jogos].sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora))
+    : jogos.filter(jogoAberto).sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
+
+  const c=document.getElementById("palpites-lista");
+
+  if(!listaJogos.length){
+    c.innerHTML='<div class="loading">Nenhum jogo disponível para palpite no momento.</div>';
+    return;
+  }
+
+  c.classList.remove("loading");
+
+  c.innerHTML=listaJogos.map(j=>{
+    const a=timeDoJogo(j,"a"), b=timeDoJogo(j,"b");
+    const pal=participanteAtual?getPalpite(j.id,participanteAtual.id):null;
+    const bloqueado = !modoAdminPalpites && !jogoAberto(j);
+
+    return `<article class="match-card"><div class="match-head"><div class="group-pill">${nomeFase(j)}</div><div class="date-time">📅 ${formatarData(j.data_hora)}</div><div class="status open">${jogoAberto(j)?"🟢 Aberto para palpites":"🔒 Encerrado"}</div></div><div class="match-body"><div class="team">
+      <div class="flag">${a.bandeira||a.codigo}</div>
+      <div class="team-name">${a.nome}</div>
+      <div class="team-history">${j.selecao_a ? historicoTime(j.selecao_a, j.id) : ""}</div>
+    </div><div class="scorebox"><input id="a-${j.id}" type="number" min="0" value="${pal?pal.gols_a:""}" ${bloqueado?"disabled":""}><span>x</span><input id="b-${j.id}" type="number" min="0" value="${pal?pal.gols_b:""}" ${bloqueado?"disabled":""}></div><div class="team">
+      <div class="flag">${b.bandeira||b.codigo}</div>
+      <div class="team-name">${b.nome}</div>
+      <div class="team-history">${j.selecao_b ? historicoTime(j.selecao_b, j.id) : ""}</div>
+    </div></div><div style="padding:0 12px 14px"><button class="save" onclick="salvarPalpite('${j.id}')" ${participanteAtual&&!bloqueado?"":"disabled"}>Salvar palpite</button></div></article>`;
+  }).join("");
+}
+    
+    async function salvarPalpite(jogoId){
+  if(!participanteAtual){
+    alert("Acesse com ?p=vinicius, ?p=evelyn ou ?p=helena.");
+    return;
+  }
+
+  const j=jogos.find(x=>x.id===jogoId);
+
+  if(!modoAdminPalpites && !jogoAberto(j)){
+    alert("Este jogo já começou.");
+    return;
+  }
+
+  const ga=Number(document.getElementById(`a-${jogoId}`).value);
+  const gb=Number(document.getElementById(`b-${jogoId}`).value);
+
+  if(Number.isNaN(ga)||Number.isNaN(gb)||ga<0||gb<0){
+    alert("Preencha os dois placares.");
+    return;
+  }
+
+  const {error}=await sb.from("palpites").upsert({
+    jogo_id:jogoId,
+    participante_id:participanteAtual.id,
+    gols_a:ga,
+    gols_b:gb,
+    atualizado_em:new Date().toISOString()
+  },{onConflict:"jogo_id,participante_id"});
+
+  if(error){
+    alert("Erro ao salvar: "+error.message);
+    return;
+  }
+
+  alert(modoAdminPalpites
+    ? `Palpite de ${participanteAtual.nome} salvo com sucesso!`
+    : "Palpite salvo!"
+  );
+
+  await carregarDados();
+}
+
+    function trocarParticipanteAdminPalpite(slug){
+  participanteAdminSlug = slug;
+  renderPalpites();
+}
+
+function toggleTodosJogosPalpites(valor){
+  mostrarTodosJogosPalpites = valor;
+  renderPalpites();
+}
+
+window.trocarParticipanteAdminPalpite = trocarParticipanteAdminPalpite;
+window.toggleTodosJogosPalpites = toggleTodosJogosPalpites;
 
     function entrarAdmin(){
       const senha = document.getElementById("admin-senha").value;
