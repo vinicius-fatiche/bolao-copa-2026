@@ -519,31 +519,21 @@ window.trocarParticipanteAdminPalpite = trocarParticipanteAdminPalpite;
 window.toggleTodosJogosPalpites = toggleTodosJogosPalpites;
 
     function entrarAdmin(){
-      const senha = document.getElementById("admin-senha").value;
-      if(senha !== "bolao2026"){
-        alert("Senha incorreta.");
-        return;
-      }
-      document.getElementById("admin-login").style.display = "none";
-      document.getElementById("admin-panel").style.display = "block";
-      renderAdminJogos();
-    }
+  const senha = document.getElementById("admin-senha").value;
 
-    let jogoAdminSelecionado = null;
+  if(senha !== "bolao2026"){
+    alert("Senha incorreta.");
+    return;
+  }
 
-    let adminFiltro = "pendentes";
+  modoAdminPalpites = true;
 
-    document.querySelectorAll("[data-admin-filtro]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    adminFiltro = btn.dataset.adminFiltro;
+  document.getElementById("admin-login").style.display = "none";
+  document.getElementById("admin-panel").style.display = "block";
 
-    document.querySelectorAll("[data-admin-filtro]").forEach(b=>{
-      b.classList.toggle("active", b === btn);
-    });
-
-    renderAdminJogos();
-  });
-});
+  renderAdminJogos();
+  renderPalpites();
+}
 
 function cardAdminJogo(j){
   const a = timeDoJogo(j,"a");
@@ -664,6 +654,7 @@ function editarResultadoAdmin(id){
 
     window.entrarAdmin = entrarAdmin;
 window.salvarResultadoAdmin = salvarResultadoAdmin;
+window.salvarPalpite = salvarPalpite;
 
     async function carregarDados(){
       const [part,sel,jog,pal,rank]=await Promise.all([
