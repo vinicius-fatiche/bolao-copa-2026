@@ -531,6 +531,7 @@ window.toggleTodosJogosPalpites = toggleTodosJogosPalpites;
   document.getElementById("admin-login").style.display = "none";
   document.getElementById("admin-panel").style.display = "block";
 
+      
   renderAdminJogos();
   renderPalpites();
 }
@@ -570,6 +571,8 @@ function cardAdminJogo(j){
     </div>
   `;
 }
+
+    let adminFiltro = "pendentes";
 
 function renderAdminJogos(){
   const c = document.getElementById("admin-jogos-pendentes");
