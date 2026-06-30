@@ -565,6 +565,14 @@ function cardAdminJogo(j){
         </div>
       </div>
 
+      <div style="padding:0 12px 12px;">
+        <select id="admin-penaltis-${j.id}" style="width:100%;height:42px;border:2px solid var(--green);border-radius:8px;padding:0 10px;font-weight:800;">
+          <option value="">Se empatar, quem passou nos pênaltis?</option>
+          <option value="${j.selecao_a}" ${j.vencedor_penaltis===j.selecao_a?"selected":""}>${a.nome}</option>
+          <option value="${j.selecao_b}" ${j.vencedor_penaltis===j.selecao_b?"selected":""}>${b.nome}</option>
+        </select>
+      </div>
+
       <button class="mini-edit" onclick="salvarResultadoAdmin('${j.id}')">
         Salvar resultado
       </button>
@@ -625,8 +633,11 @@ function editarResultadoAdmin(id){
     }
 
     async function salvarResultadoAdmin(id){
+  const jogo = jogos.find(j=>j.id===id);
+
   const golsAInput = document.getElementById(`admin-a-${id}`).value;
   const golsBInput = document.getElementById(`admin-b-${id}`).value;
+  const vencedorPenaltis = document.getElementById(`admin-penaltis-${id}`).value || null;
 
   if(golsAInput === "" || golsBInput === ""){
     alert("Preencha os dois placares.");
@@ -636,11 +647,17 @@ function editarResultadoAdmin(id){
   const gols_a = Number(golsAInput);
   const gols_b = Number(golsBInput);
 
+  if(gols_a === gols_b && jogo.fase !== "grupos" && !vencedorPenaltis){
+    alert("Como o jogo empatou, selecione quem passou nos pênaltis.");
+    return;
+  }
+
   const { error } = await sb
     .from("jogos")
     .update({
       gols_a,
       gols_b,
+      vencedor_penaltis: gols_a === gols_b ? vencedorPenaltis : null,
       status: "finalizado",
       atualizado_em: new Date().toISOString()
     })
