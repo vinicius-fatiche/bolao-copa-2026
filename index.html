@@ -159,9 +159,9 @@
   <div class="section-title">🔴 Jogos sem resultado</div>
 
   <div class="subtabs">
-    <button class="subtab active" data-admin-filtro="pendentes">🔴 Pendentes</button>
-    <button class="subtab" data-admin-filtro="finalizados">✅ Finalizados</button>
-  </div>
+  <button class="subtab active" id="btn-admin-pendentes" onclick="setAdminFiltro('pendentes')">🔴 Pendentes</button>
+  <button class="subtab" id="btn-admin-finalizados" onclick="setAdminFiltro('finalizados')">✅ Finalizados</button>
+</div>
 
   <div id="admin-jogos-pendentes"></div>
 </div>
@@ -581,6 +581,17 @@ function cardAdminJogo(j){
 }
 
     let adminFiltro = "pendentes";
+
+    function setAdminFiltro(filtro){
+  adminFiltro = filtro;
+
+  document.getElementById("btn-admin-pendentes").classList.toggle("active", filtro === "pendentes");
+  document.getElementById("btn-admin-finalizados").classList.toggle("active", filtro === "finalizados");
+
+  renderAdminJogos();
+}
+
+window.setAdminFiltro = setAdminFiltro;
 
 function renderAdminJogos(){
   const c = document.getElementById("admin-jogos-pendentes");
