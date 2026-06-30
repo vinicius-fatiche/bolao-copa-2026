@@ -643,6 +643,46 @@ function editarResultadoAdmin(id){
       document.getElementById("admin-status").value = j.status || "aberto";
     }
 
+    function vencedorDoJogo(j){
+  if(j.gols_a === null || j.gols_b === null) return null;
+
+  if(j.gols_a > j.gols_b) return j.selecao_a;
+  if(j.gols_b > j.gols_a) return j.selecao_b;
+
+  return j.vencedor_penaltis || null;
+}
+
+async function atualizarChaveamento(){
+  const updates = [];
+
+  jogos.forEach(j=>{
+    if(j.status !== "finalizado") return;
+
+    const vencedor = vencedorDoJogo(j);
+    if(!vencedor) return;
+
+    const origem = `${j.fase}_${j.numero_jogo}`;
+
+    jogos.forEach(destino=>{
+      if(destino.origem_a === origem && destino.selecao_a !== vencedor){
+        updates.push(
+          sb.from("jogos").update({selecao_a:vencedor}).eq("id", destino.id)
+        );
+      }
+
+      if(destino.origem_b === origem && destino.selecao_b !== vencedor){
+        updates.push(
+          sb.from("jogos").update({selecao_b:vencedor}).eq("id", destino.id)
+        );
+      }
+    });
+  });
+
+  if(updates.length){
+    await Promise.all(updates);
+  }
+}
+
     async function salvarResultadoAdmin(id){
   const jogo = jogos.find(j=>j.id===id);
 
@@ -680,7 +720,11 @@ function editarResultadoAdmin(id){
   }
 
   await carregarDados();
-  renderAdminJogos();
+await atualizarChaveamento();
+await carregarDados();
+renderAdminJogos();
+renderJogos();
+renderPalpites();
 }
 
     window.entrarAdmin = entrarAdmin;
