@@ -588,8 +588,8 @@ function renderAdminJogos(){
 
   const lista = [...jogos]
     .filter(j => {
-      const finalizado = j.gols_a !== null && j.gols_b !== null;
-      return adminFiltro === "finalizados" ? finalizado : !finalizado;
+      const finalizado = j.status === "finalizado";
+return adminFiltro === "finalizados" ? finalizado : !finalizado;
     })
     .sort((a,b)=>new Date(a.data_hora)-new Date(b.data_hora));
 
